@@ -107,7 +107,7 @@ class Status:
         self.breaktime = breaktime
         self.status = "work"  # or "break"
         self.timer = Timer(self.worktime)
-        self.active = False
+        self.active = True
         self.locked = True
         self.saveto = saveto
 
