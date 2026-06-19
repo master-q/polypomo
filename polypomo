@@ -16,6 +16,8 @@ import pathlib
 
 SOCKDIR = os.environ.get("XDG_RUNTIME_DIR", "/var/tmp")
 SOCKFILE = os.path.join(SOCKDIR, "polypomo.sock")
+APPDIR = os.path.dirname(os.path.abspath(__file__))
+ICONFILE = os.path.join(APPDIR, "polypomo-notify.png")
 TOMATO = "\U0001F345"  # Recommended font: Noto Emoji
 BREAK = "\U0001F3D6"  # Recommended font: Noto Emoji
 PAUSE = "\U000023F8"  # Recommended font: Siji
@@ -80,12 +82,13 @@ class Timer:
                 call(
                     [
                         "notify-send",
+                        "--hint=string:image-path:" + ICONFILE,
                         "-t",
                         "0",
                         "-u",
                         "critical",
                         "Pomodoro",
-                        "Timer reached zero",
+                        "Break time",
                     ],
                     stdout=DEVNULL,
                     stderr=DEVNULL,
@@ -126,6 +129,9 @@ class Status:
     def update(self):
         if self.active:
             self.timer.update()
+            if self.timer.time < 0:
+                self.next_timer()
+                self.toggle()
         # This ensures the timer counts time since the last iteration
         # and not since it was initialized
         self.timer.tick()
